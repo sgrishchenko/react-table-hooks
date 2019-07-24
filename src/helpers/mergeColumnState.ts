@@ -1,3 +1,4 @@
+/*
 import {ColumnState} from "../types/column";
 
 export const mergeColumnState = <S>(...columnStates: ColumnState<S>[]): ColumnState<S> => {
@@ -9,4 +10,5 @@ export const mergeColumnState = <S>(...columnStates: ColumnState<S>[]): ColumnSt
                 ...state,
             }), {})
     )
-};
+};*/
+export const x = 5;

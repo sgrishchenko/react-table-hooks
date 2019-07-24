@@ -1,25 +1,23 @@
-import React, {useRef} from 'react'
+import React, {useCallback, useRef} from 'react'
 
-export const useDeltaXEffect = () => {
-    const pageX = useRef<number>();
+export const useDeltaXEffect = (onDeltaXChange: (deltaX: number) => void) => {
+    const pageX = useRef(NaN);
 
-    return (onDeltaXChange: (deltaX: number) => void) => {
-        const onMouseMoving = (event: MouseEvent) => {
-            onDeltaXChange(event.pageX - pageX.current!)
-        };
+    const onMouseMoving = useCallback((event: MouseEvent) => {
+        onDeltaXChange(event.pageX - pageX.current)
+    }, [pageX, onDeltaXChange]);
 
-        const onMouseMovingEnd = () => {
-            document.removeEventListener('mousemove', onMouseMoving);
-            document.removeEventListener('mouseup', onMouseMovingEnd);
-            document.removeEventListener('mouseleave', onMouseMovingEnd);
-        };
+    const onMouseMovingEnd = useCallback(() => {
+        document.removeEventListener('mousemove', onMouseMoving);
+        document.removeEventListener('mouseup', onMouseMovingEnd);
+        document.removeEventListener('mouseleave', onMouseMovingEnd);
+    }, [onMouseMoving]);
 
-        return (event: React.MouseEvent) => {
-            pageX.current = event.pageX;
+    return useCallback((event: React.MouseEvent) => {
+        pageX.current = event.pageX;
 
-            document.addEventListener('mousemove', onMouseMoving);
-            document.addEventListener('mouseup', onMouseMovingEnd);
-            document.addEventListener('mouseleave', onMouseMovingEnd);
-        }
-    }
+        document.addEventListener('mousemove', onMouseMoving);
+        document.addEventListener('mouseup', onMouseMovingEnd);
+        document.addEventListener('mouseleave', onMouseMovingEnd);
+    }, [onMouseMoving, onMouseMovingEnd]);
 };

@@ -9,9 +9,3 @@ export type Column<T> = {
     Header?: () => ReactNode;
     Cell?: (item: T) => ReactNode;
 }
-
-
-
-export type ColumnState<S> = [string, S][]
-
-export type SetColumnState<S> = (state: ColumnState<S>) => void

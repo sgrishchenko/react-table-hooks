@@ -19,3 +19,4 @@ export const defaultSortMethod = (a: any, b: any) => {
 };
 
 export const defaultColumnWidth: number = 100;
+export const defaultColumnMinWidth: number = 30;

@@ -1,3 +1,4 @@
+/*
 import {ColumnState, SetColumnState} from "../types/column";
 import {useControlledState} from "./useControlledState";
 import {Dispatch, SetStateAction} from "react";
@@ -11,6 +12,7 @@ export const useColumnSorting = <T>(
     const [sorting, setSorting] = useControlledState(
         propSorting,
         propSetSorting as Dispatch<SetStateAction<ColumnState<'asc' | 'desc'>>>,
+        []
     );
 
     const setAppendableSorting: SetColumnState<'asc' | 'desc'> = sorting => setSorting(
@@ -23,4 +25,5 @@ export const useColumnSorting = <T>(
     );
 
     return [sorting, setAppendableSorting];
-};
+};*/
+export const x = 5;

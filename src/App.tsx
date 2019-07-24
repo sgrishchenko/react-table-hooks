@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table} from "./Table";
+import {Table} from "./components/Table";
 import data from './data.json';
 import {Column} from "./types/column";
 
@@ -23,13 +23,14 @@ export type Person = {
     birthDate: string
 };
 
-const persons: Person[] = data;
+const persons: Person[] = data.slice(0, 10);
 
 const columns: Column<Person>[] = [
     {
         id: 'id',
         accessor: item => item.id,
-        Header: () => 'ID'
+        Header: () => 'ID',
+        width: 50,
     },
     {
         id: 'firstName',
@@ -55,7 +56,7 @@ const columns: Column<Person>[] = [
         id: 'ipAddress',
         accessor: item => item.ipAddress,
         Header: () => 'IP Address'
-    },
+    },/*
     {
         id: 'city',
         accessor: item => item.city,
@@ -80,7 +81,7 @@ const columns: Column<Person>[] = [
         id: 'phone',
         accessor: item => item.phone,
         Header: () => 'Phone'
-    },
+    },*/
 ];
 
 export const App = () => {

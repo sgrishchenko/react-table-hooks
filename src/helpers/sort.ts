@@ -1,4 +1,4 @@
-import {sortBy} from 'lodash';
+/*import {sortBy} from 'lodash';
 import {Column, ColumnState} from "../types/column";
 import {defaultAccessor, defaultSortMethod} from "./defaults";
 import {Formatted} from "../types/formatted";
@@ -21,4 +21,6 @@ export const sort = <T>(
     });
 
     return sortBy(data, iteratees) as Formatted<T>[];
-};
+};*/
+
+export const x = 5;

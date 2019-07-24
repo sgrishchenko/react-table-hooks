@@ -1,50 +1,56 @@
-import {Column, ColumnState, SetColumnState} from '../types/column'
-import {useControlledState} from './useControlledState'
-import {Dispatch, SetStateAction} from "react";
+import {useCallback, useContext} from "react";
 import {defaultColumnWidth} from "../helpers/defaults";
-import {mergeColumnState} from "../helpers/mergeColumnState";
+import {ColumnsContext, ContainerWidthContext} from "../contexts";
+import {useChannelDispatch, useChannelState} from "../helpers/Channel";
+import {TableState} from "../types/tableState";
+import {resizeColumn} from "../tableState";
 
-export const useColumnWidth = <T>(
-    propWidthRatio: ColumnState<number>,
-    propSetWidthRatio: SetColumnState<number>,
-    containerWidth: number,
-    columns: Column<T>[],
-): [ColumnState<number>, SetColumnState<number>] => {
-    const defaultWidthSum = columns.reduce(
-        (sum, {width}) => sum + (width || defaultColumnWidth),
-        0
+export const useColumnWidth = (columnId?: string) => {
+    const columns = useContext(ColumnsContext);
+    const containerWidth = useContext(ContainerWidthContext);
+
+    const columnWidthSelector = useCallback(
+        (state: TableState) => {
+            const columnState = columnId !== undefined
+                ? state.head[columnId]
+                : undefined;
+
+            return columnState !== undefined
+                ? columnState.width
+                : undefined;
+        },
+        [columnId]
     );
 
-    const defaultWidth: ColumnState<number> = columns.map(
-        column => {
-            const width = (column.width || defaultColumnWidth)
-                / defaultWidthSum * containerWidth;
+    const widthRatio = useChannelState(columnWidthSelector);
+    const dispatch = useChannelDispatch();
 
-            return [column.id, width];
+    let width: number;
+
+    if (widthRatio !== undefined) {
+        width = widthRatio * containerWidth / 100
+    } else {
+        const defaultWidthSum = columns.reduce(
+            (sum, {width}) => sum + (width || defaultColumnWidth),
+            0
+        );
+
+        const column = columns.find(current => current.id === columnId);
+        const columnWidth = column && column.width;
+
+        width = (columnWidth || defaultColumnWidth)
+            / defaultWidthSum * containerWidth
+    }
+
+    const setWidth = (width: number) => {
+        if (columnId !== undefined) {
+            dispatch(resizeColumn({
+                columnId,
+                width: width / containerWidth * 100,
+            }))
         }
-    );
-
-    const [widthRation, setWidthRation] = useControlledState(
-        propWidthRatio,
-        propSetWidthRatio as Dispatch<SetStateAction<ColumnState<number>>>,
-    );
-
-    const width: ColumnState<number> = mergeColumnState(
-        defaultWidth,
-        widthRation.map(
-            ([id, value]) => [id, value * containerWidth / 100]
-        )
-    );
-
-    const setWidth: SetColumnState<number> = width => setWidthRation(
-        prevWidthRation => mergeColumnState(
-            prevWidthRation,
-            width.map(
-                ([id, value]) => [id, value / containerWidth * 100]
-            )
-        )
-    );
+    };
 
 
-    return [width, setWidth]
+    return [width, setWidth] as [number, (width: number) => void]
 };
